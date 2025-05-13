@@ -1,0 +1,68 @@
+# config/firewall.yaml
+
+logging:
+  level: "INFO"  # General log level for the entire system (adjust as needed)
+  log_file: "./logs/nextgen_firewall.log"  # Relative path for better portability
+  log_rotate: true  # Enable log rotation to prevent logs from growing indefinitely
+  max_log_size: 50MB  # Maximum size before log rotation occurs
+  backup_count: 5  # Number of backup log files to retain
+
+dpi:
+  enabled: true
+  log_level: "INFO"  # DPI specific log level
+  # You can specify which network interfaces to inspect (e.g., 'eth0', 'wlan0', etc.)
+  interfaces:
+    - "eth0"
+    - "wlan0"
+  packet_filter:  # Example filter to restrict traffic to inspect
+    protocol: ["TCP", "UDP"]
+    ports: [80, 443]
+
+edr:
+  enabled: true
+  cpu_threshold: 80.0
+  memory_threshold: 800000000  # 800MB
+  trusted_applications:
+    - "code.exe"
+    - "msedge.exe"
+    - "chrome.exe"
+    - "firefox.exe"
+    - "brave.exe"
+    - "MsMpEng.exe"
+    - "explorer.exe"
+    - "MemCompression"
+    - "node.exe"
+    - "Teams.exe"
+    - "slack.exe"
+    - "java.exe"
+    - "javaw.exe"
+    - "python.exe"
+    - "idea64.exe"
+    - "devenv.exe"
+    - "WindowsTerminal.exe"
+  trusted_paths:
+    - "C:\\Program Files"
+    - "C:\\Program Files (x86)"
+    - "C:\\Windows"
+    - "C:\\Users\\*\\AppData\\Local\\Programs\\Microsoft VS Code"
+    - "C:\\Users\\*\\AppData\\Local\\Programs"
+    - "C:\\Users\\*\\AppData\\Roaming\\npm"
+    - "C:\\Users\\*\\AppData\\Local\\GitHub"
+
+hips:
+  enabled: true
+  log_level: "INFO"
+  logging_enabled: true
+  blocking_enabled: true
+  quarantine_enabled: true
+  log_directory: "./logs"  # Ensure this directory exists or can be created
+  quarantine_directory: "./quarantined"  # Ensure this directory exists or can be created
+  packet_threshold: 1024  # Set a reasonable packet threshold for suspicious activities
+
+management:
+  endpoint: "localhost"
+  api_key: "your_api_key_here"  # Consider externalizing this or using a secrets manager
+  timeout: 30  # Timeout for API requests
+  retries: 3  # Number of retries on failure
+  api_version: "v1"  # If versioning is used for the API
+  # You can add additional settings like 'retry_backoff' or 'circuit_breaker' for robust handling
